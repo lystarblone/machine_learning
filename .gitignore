@@ -3,3 +3,4 @@ venv/
 .idea/
 dataset/
 output/
+lab 10/model.keras
