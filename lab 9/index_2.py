@@ -4,6 +4,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Dropout, RandomRotation, RandomFlip, RandomContrast, Rescaling, Input
 import matplotlib.pyplot as plt
 import logging
+import numpy as np
 
 # Настройка логирования и случайного seed
 tf.get_logger().setLevel(logging.ERROR)
@@ -105,6 +106,27 @@ model.evaluate(test)
 # Визуализация результатов классификации
 batch = list(test)[0]
 x_out = model.predict(batch[0], verbose=2)
+
+# Вывод предсказаний, истинных значений и MSE для первых 4 изображений
+sample_predictions = x_out[:4]  # Первые 4 предсказания
+sample_labels = batch[1][:4]    # Первые 4 истинные метки
+
+# Преобразуем метки в индексы классов (0 или 1)
+true_labels = np.argmax(sample_labels, axis=1)
+predicted_labels = np.argmax(sample_predictions, axis=1)
+
+# Вычисляем MSE для каждого предсказания
+mse_values = np.mean((sample_predictions - sample_labels) ** 2, axis=1) * 1000  # Умножаем на 1000 для масштаба, как в примере
+
+# Выводим результаты для каждого из 4 изображений
+print("\nPrediction Results for First 4 Samples:")
+for i in range(4):
+    print(f"Prediction: [{predicted_labels[i]:.6f}] , true value: {true_labels[i]:.1f} , MSE: {mse_values[i]:.6f}")
+
+# Вычисляем точность для этих 4 значений
+correct_predictions = np.sum(predicted_labels == true_labels)
+accuracy = correct_predictions / 4
+print(f"\nAccuracy for the first 4 samples: {accuracy:.2f} ({correct_predictions}/4 correct)")
 
 # Отображение результатов
 fig, axes = plt.subplots(4, 5, figsize=(12, 10))
