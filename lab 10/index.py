@@ -42,7 +42,6 @@ data_augmentation = keras.Sequential(
     ]
 )
 
-regularizer = keras.regularizers.L2(l2=0.01)
 MODEL_DIRECTION = 'lab 10/model.keras'
 
 # Загрузка предобученной модели
@@ -124,7 +123,7 @@ for i in range(20):
     ax = axes[row, col]
     ax.imshow(img[0][i].numpy().astype("uint8"))
     ax.axis("off")
-    ax.set_title(f"{predicted_class} ({sign})", fontsize=12)
+    ax.set_title(f"{predicted_class} ({sign}, {x_out[i][x_out[i].argmax()]:.2f})", fontsize=12)
 plt.tight_layout()
 plt.savefig('predictions_plot.png')
 plt.close()
