@@ -10,7 +10,6 @@ from sklearn.model_selection import train_test_split
 # Параметры пути и файлов
 DATASET_DIR = "lab 11/dataset/training"
 VALIDATION_DIR = "lab 11/dataset/validation"
-MUSIC_NAME = 'music'
 
 # Параметры обработки midi
 TIME_RESOLUTION = 10  # Сколько шагов в секунду
@@ -18,14 +17,14 @@ MIN_SEQ_LENGTH = 100
 MAX_SEQ_LENGTH = 640
 PIANO_NOTE_RANGE = (21, 108)  # Диапазон MIDI-нот для фортепиано
 MAX_NOTES_PER_STEP = 4  # Максимум одновременных нот на одном временном шаге
-PAUSE_VALUE = 0.0  # Значение для паузы (отсутствия ноты)
+PAUSE_VALUE = 0.0
 
 # Параметры обучения модели
 BATCH_SIZE = 32
 EPOCHS = 200
 
 # Параметры генерации midi
-MAX_GENERATION_DURATION = 75  # Максимальная длительность генерации в секундах
+MAX_GENERATION_DURATION = 75
 DEFAULT_BPM = 80
 STEPS_PER_BEAT = 4  # Шагов на одну долю (для размера 4/4)
 NOTE_RANGE = (1, 88)  # Диапазон нот (нормализованный)
@@ -198,7 +197,7 @@ class MidiConverter:
         self.steps_per_beat = steps_per_beat
 
     def convert_to_midi(self, sequence, output_file):
-        midi = MIDIFile(1)
+        midi = MIDIFile(1)  # Создание файла с 1 дорожкой
         midi.addTempo(0, 0, self.bpm)
         time_per_step = 1 / self.steps_per_beat
         active_notes = {}
@@ -247,7 +246,7 @@ dataset_processor = DatasetProcessor(
     min_seq_length=MIN_SEQ_LENGTH,
     max_seq_length=MAX_SEQ_LENGTH
 )
-dataset = dataset_processor.process_dataset()  # Получаем датасет напрямую
+dataset = dataset_processor.process_dataset()
 
 # Подготовка данных
 data_loader = DataLoader(MAX_SEQ_LENGTH)
@@ -274,5 +273,5 @@ generated_sequence = generator.generate_sequence(seed_sequence)
 
 # Сохранение MIDI-файла
 midi_converter = MidiConverter(DEFAULT_BPM, STEPS_PER_BEAT)
-midi_converter.convert_to_midi(generated_sequence, f'lab 11/output/{MUSIC_NAME}.mid')
-print(f'Музыка успешно сохранена в lab 11/output/{MUSIC_NAME}.mid')
+midi_converter.convert_to_midi(generated_sequence, 'lab 11/output/music.mid')
+print('Музыка успешно сохранена в lab 11/output/music.mid')

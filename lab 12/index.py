@@ -4,6 +4,8 @@ from keras.models import Sequential
 from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Dropout, RandomRotation, RandomFlip, RandomContrast, Rescaling, Input, RandomZoom
 import matplotlib.pyplot as plt
 import logging
+import os
+import numpy as np
 
 # Настройка логирования и случайного seed
 tf.get_logger().setLevel(logging.ERROR)
@@ -137,3 +139,29 @@ for i in range(20):
 
 plt.tight_layout()
 plt.show()
+
+new_images_path = 'lab 11/dataset/new_images'
+
+new_images = []
+for filename in os.listdir(new_images_path):
+    if filename.endswith(('.png', '.jpg', '.jpeg')):
+        img_path = os.path.join(new_images_path, filename)
+        img = keras.utils.load_img(img_path, target_size=IMG_SIZE)
+        img_array = keras.utils.img_to_array(img)
+        img_array = tf.expand_dims(img_array, 0)
+        img_array = img_array / 255.0
+        new_images.append(img_array)
+
+# Предсказание для каждого изображения
+for i, img_array in enumerate(new_images):
+    prediction = model.predict(img_array, verbose=0)
+    predicted_class = class_names[prediction[0].argmax()]
+    confidence = prediction[0][prediction[0].argmax()]
+
+    # Отображение изображения и предсказания
+    img = keras.utils.load_img(os.path.join(new_images_path, os.listdir(new_images_path)[i]), target_size=IMG_SIZE)
+    plt.figure(figsize=(5, 5))
+    plt.imshow(img)
+    plt.axis("off")
+    plt.title(f"Предсказание: {predicted_class} (Уверенность: {confidence:.2f})")
+    plt.show()
